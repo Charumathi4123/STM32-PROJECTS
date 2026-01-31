@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>GPS UART Project</title>
+<style>
+body {
+  font-family: Arial;
+  background-color: #f2f2f2;
+}
+.container {
+  background: white;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+}
+h2 {
+  color: #0d6efd;
+}
+img {
+  width: 60%;
+  border: 1px solid #ccc;
+}
+pre {
+  background: #000;
+  color: #0f0;
+  padding: 10px;
+  overflow: auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>STM32F401RE – GPS UART Project</h1>
+
+<h2>1. Objective</h2>
+<ul>
+<li>Read GPS data using STM32 UART</li>
+<li>Display GPS NMEA data in Serial Monitor</li>
+<li>Interface GPS module with STM32</li>
+</ul>
+
+<h2>2. Modules Required</h2>
+<ul>
+<li>STM32F401RE Board</li>
+<li>NEO-6M GPS Module</li>
+<li>Connecting Wires</li>
+<li>USB Cable</li>
+<li>PC with PuTTY</li>
+</ul>
+
+<h2>3. Schematic Diagram</h2>
+<img src="images/schematic.png">
+
+<h2>4. CubeMX Configuration</h2>
+<ul>
+<li>Enable USART2</li>
+<li>PA2 – TX</li>
+<li>PA3 – RX</li>
+<li>Baud Rate – 9600</li>
+</ul>
+
+<img src="images/cubemx.png">
+
+<h2>5. Connections</h2>
+<ul>
+<li>GPS TX → STM32 PA3 (RX)</li>
+<li>GPS RX → STM32 PA2 (TX)</li>
+<li>GPS VCC → 5V</li>
+<li>GPS GND → GND</li>
+</ul>
+
+<h2>6. Program Code</h2>
+
+<p>Main Code File: main.c</p>
+
+<pre>
+#include "main.h"
+#include <string.h>
+
+UART_HandleTypeDef huart2;
+
+char rx_data[100];
+
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_USART2_UART_Init(void);
+
+int main(void)
+{
+  HAL_Init();
+  SystemClock_Config();
+  MX_GPIO_Init();
+  MX_USART2_UART_Init();
+
+  while (1)
+  {
+    HAL_UART_Receive(&huart2, (uint8_t*)rx_data, 100, 1000);
+    HAL_UART_Transmit(&huart2, (uint8_t*)rx_data, strlen(rx_data), 1000);
+    HAL_Delay(1000);
+  }
+}
+</pre>
+
+<p>
+Full project code files available in:
+<b>gps-project/code/</b> folder
+</p>
+
+<h2>7. Instructions (Using PuTTY)</h2>
+<ul>
+<li>Connect GPS module to STM32 correctly</li>
+<li>Open project in STM32CubeIDE</li>
+<li>Enable USART2 in CubeMX</li>
+<li>Build and flash the code</li>
+<li>Connect STM32 to PC</li>
+<li>Open PuTTY software</li>
+<li>Select Serial mode</li>
+<li>Choose correct COM port</li>
+<li>Set baud rate 9600</li>
+<li>Click Open</li>
+<li>Observe GPS data on screen</li>
+</ul>
+
+<h2>8. Working</h2>
+<ul>
+<li>GPS sends NMEA data continuously</li>
+<li>STM32 receives data via UART</li>
+<li>Data is transmitted to PC serial monitor</li>
+<li>User can view latitude and longitude</li>
+</ul>
+
+<h2>9. Points to Remember</h2>
+<ul>
+<li>Use correct baud rate 9600</li>
+<li>Check TX/RX connections properly</li>
+<li>GPS needs outdoor signal</li>
+<li>Wait few minutes for satellite lock</li>
+<li>Use common ground</li>
+</ul>
+
+<h2>10. Output</h2>
+<img src="images/output.png">
+
+</div>
+
+</body>
+</html>
 
